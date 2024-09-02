@@ -15,9 +15,12 @@ GetStateHardware - просто Message		структура StateHardware
 SetCommand - заполненная структура		сообщение Ok или сообщение с ошибкой
 GetSetup - просто Message				структура SetupSubsystem
 SetSetup - структура SetupSubsystem 	сообщение Ok или сообщение с ошибкой затем будет перезагружена моя программа
+
 	(потребуется переподключение)
+
 GetStatistics 							структура RepStatistics
 */
+const Endline = '\n'
 
 type Message struct {
 	Message string `json:"message"`

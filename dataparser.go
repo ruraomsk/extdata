@@ -37,7 +37,7 @@ func NewMessage(messageType MessageType, data interface{}) (*MessageItem, error)
 				return nil, fmt.Errorf("invalid data type for %s, expected *Message", messageType)
 			}
 		case MessageType_SetCommand:
-			if _, ok := data.(*SetCommand); !ok {
+			if _, ok := data.(*CommandForDevice); !ok {
 				return nil, fmt.Errorf("invalid data type for %s, expected *SetCommand", messageType)
 			}
 		case MessageType_SetSetup:
@@ -70,7 +70,7 @@ func (m *MessageItem) ParseRequest() (interface{}, error) {
 	case MessageType_GetStateHardware:
 		result = new(Message)
 	case MessageType_SetCommand:
-		result = new(SetCommand)
+		result = new(CommandForDevice)
 	case MessageType_GetSetup:
 		result = new(Message)
 	case MessageType_SetSetup:
