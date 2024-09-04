@@ -1,4 +1,4 @@
-package back
+package client
 
 import (
 	"time"
@@ -15,12 +15,11 @@ GetStateHardware - просто Message		структура StateHardware
 SetCommand - заполненная структура		сообщение Ok или сообщение с ошибкой
 GetSetup - просто Message				структура SetupSubsystem
 SetSetup - структура SetupSubsystem 	сообщение Ok или сообщение с ошибкой затем будет перезагружена моя программа
-
 	(потребуется переподключение)
-
 GetStatistics 							структура RepStatistics
 */
-const Endline = '\n'
+
+const Endline byte = '\n'
 
 type Message struct {
 	Message string `json:"message"`
@@ -222,6 +221,10 @@ type StateHardware struct {
 	Message       string    `json:"message"` //StateHardware
 	StateHardware StateHard //Состояние контроллера
 }
+
+type SetCommand struct {
+}
+
 type CommandForDevice struct {
 	Message  string `json:"message"`  //SetCommand
 	Plan     int    `json:"plan"`     // 0 - снять управление

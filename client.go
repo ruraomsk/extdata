@@ -1,4 +1,4 @@
-package back
+package client
 
 import (
 	"bufio"
@@ -13,8 +13,12 @@ const port = 8888
 type IClient interface {
 	Connect() error
 	Disconnect() error
-	SendMessage(v interface{}, result interface{}) error
-	Send(v []byte) ([]byte, error)
+	// just send bytes
+	SendBytes(v []byte) ([]byte, error)
+	// parse bytes to message item and send
+	SendItemBytes(v []byte) ([]byte, error)
+	// send meesage items
+	SendItem(v *MessageItem) (*MessageItem, error)
 }
 
 func NewClient(host string) IClient {
@@ -30,6 +34,8 @@ type Client struct {
 	port   int
 	mutex  sync.Mutex
 	isOpen bool
+	reader *bufio.Reader
+	writer *bufio.Writer
 }
 
 func (c *Client) Connect() error {
@@ -47,6 +53,8 @@ func (c *Client) Connect() error {
 	}
 
 	c.isOpen = true
+	c.reader = bufio.NewReader(c.conn)
+	c.writer = bufio.NewWriter(c.conn)
 	return nil
 }
 
@@ -67,9 +75,57 @@ func (c *Client) Disconnect() error {
 	return nil
 }
 
-func (c *Client) Send(v []byte) ([]byte, error) {
-	//TODO FIX
-	return []byte{}, nil
+func (c *Client) SendItemBytes(v []byte) ([]byte, error) {
+	m, err := ParseMessage(v)
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.SendItem(m)
+	if err != nil {
+		return nil, err
+	}
+	return response.BytesRaw()
+}
+
+func (c *Client) SendItem(v *MessageItem) (*MessageItem, error) {
+	bytes, err := json.Marshal(v)
+	if err != nil {
+		return nil, err
+	}
+	resBytes, err := c.SendBytes(bytes)
+	if err != nil {
+		return nil, err
+	}
+	resMesage, err := NewResponse(v.Type, resBytes)
+	if err != nil {
+		return nil, err
+	}
+	return resMesage, nil
+}
+
+func (c *Client) SendBytes(v []byte) ([]byte, error) {
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+
+	if !c.isOpen {
+		return nil, fmt.Errorf("connection is not established")
+	}
+
+	// Добавляем символ конца строки и отправляем сообщение
+	_, err := c.writer.Write(v)
+	if err != nil {
+		return nil, err
+	}
+	c.writer.WriteByte(Endline)
+	c.writer.Flush()
+	// Ждем и читаем ответ
+	response, err := c.reader.ReadBytes(Endline)
+	if err != nil {
+		return nil, err
+	}
+	// Удаляем символ конца строки из ответа
+
+	return response, nil
 }
 
 func (c *Client) SendMessage(v interface{}, result interface{}) error {
@@ -87,25 +143,23 @@ func (c *Client) SendMessage(v interface{}, result interface{}) error {
 	}
 
 	// Добавляем символ конца строки и отправляем сообщение
-	_, err = c.conn.Write(append(data, Endline))
+	_, err = c.writer.Write(data)
 	if err != nil {
 		return err
 	}
+	c.writer.WriteByte(Endline)
+	c.writer.Flush()
 	// Ждем и читаем ответ
-	reader := bufio.NewReader(c.conn)
-	response, err := reader.ReadBytes(Endline)
+	response, err := c.reader.ReadBytes(Endline)
 	if err != nil {
 		return err
 	}
-
 	// Удаляем символ конца строки и десериализуем ответ
-	response = response[:len(response)-1]
 	err = json.Unmarshal(response, &result)
 	if err != nil {
 		fmt.Printf("Unmarshel res %v error: %v", string(response), err)
 		return err
 	}
-
 	return nil
 }
 
@@ -123,12 +177,5 @@ func (c *Client) Reconnect() error {
 	}
 
 	// Пытаемся установить новое соединение
-	var err error
-	c.conn, err = net.Dial("tcp", fmt.Sprintf("%s:%d", c.host, c.port))
-	if err != nil {
-		return fmt.Errorf("failed to reconnect: %v", err)
-	}
-
-	c.isOpen = true
-	return nil
+	return c.Connect()
 }

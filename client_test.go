@@ -1,4 +1,4 @@
-package back
+package client
 
 import (
 	"fmt"
@@ -18,15 +18,16 @@ func TestClient_GetStateHardware(t *testing.T) {
 	}
 	defer client.Disconnect()
 
-	request := Message{Message: "GetStateHardware"}
-	var response StateHardware
-
-	err = client.SendMessage(request, &response)
+	request, err := NewRequest(MessageType_GetStateHardware, nil)
+	if err != nil {
+		t.Fatalf("Failed to NewRequest: %v", err)
+	}
+	response, err := client.SendItem(request)
 	if err != nil {
 		t.Fatalf("Failed to send message: %v", err)
 	}
 
-	fmt.Printf("Received response: %+v\n", response)
+	fmt.Printf("Received response: %v\n", string(response.BytesOrPanic()))
 }
 
 func TestClient_SetCommand(t *testing.T) {
@@ -37,15 +38,16 @@ func TestClient_SetCommand(t *testing.T) {
 	}
 	defer client.Disconnect()
 
-	request := Message{Message: "SetCommand"}
-	var response string
-
-	err = client.SendMessage(request, &response)
+	request, err := NewRequest(MessageType_SetCommand, nil)
+	if err != nil {
+		t.Fatalf("Failed to NewRequest: %v", err)
+	}
+	response, err := client.SendItem(request)
 	if err != nil {
 		t.Fatalf("Failed to send message: %v", err)
 	}
 
-	fmt.Printf("Received response: %s\n", response)
+	fmt.Printf("Received response: %v\n", string(response.BytesOrPanic()))
 }
 
 func TestClient_GetSetup(t *testing.T) {
@@ -56,15 +58,16 @@ func TestClient_GetSetup(t *testing.T) {
 	}
 	defer client.Disconnect()
 
-	request := Message{Message: "GetSetup"}
-	var response SetupSubsystem
-
-	err = client.SendMessage(request, &response)
+	request, err := NewRequest(MessageType_GetSetup, nil)
+	if err != nil {
+		t.Fatalf("Failed to NewRequest: %v", err)
+	}
+	response, err := client.SendItem(request)
 	if err != nil {
 		t.Fatalf("Failed to send message: %v", err)
 	}
 
-	fmt.Printf("Received response: %+v\n", response)
+	fmt.Printf("Received response: %v\n", string(response.BytesOrPanic()))
 }
 
 func TestClient_SetSetup(t *testing.T) {
@@ -74,27 +77,33 @@ func TestClient_SetSetup(t *testing.T) {
 		t.Fatalf("Failed to connect: %v", err)
 	}
 	defer client.Disconnect()
-	request := Message{Message: "GetSetup"}
-	var response SetupSubsystem
+	request, err := NewRequest(MessageType_GetSetup, nil)
+	if err != nil {
+		t.Fatalf("Failed to NewRequest: %v", err)
+	}
+	// var setupSubsystem SetupSubsystem
 
-	err = client.SendMessage(request, &response)
+	response, err := client.SendItem(request)
 	if err != nil {
 		t.Fatalf("Failed to send message: %v", err)
 		return
 	}
-	requestSetSetup := SetupSubsystem{
-		Message: "SetSetup",
-		Setup:   response.Setup,
+	setupSubsystem, err := ParseResponseAndCast[SetupSubsystem](response)
+	if err != nil {
+		t.Fatalf("Failed to send message: %v", err)
+		return
 	}
-
-	var responseItem string
-
-	err = client.SendMessage(requestSetSetup, &responseItem)
+	requestSetSetup, err := NewRequest(MessageType_SetSetup, &setupSubsystem.Setup)
 	if err != nil {
 		t.Fatalf("Failed to send message: %v", err)
 	}
 
-	fmt.Printf("Received response: %s\n", responseItem)
+	setSetupResponse, err := client.SendItem(requestSetSetup)
+	if err != nil {
+		t.Fatalf("Failed to send message: %v", err)
+	}
+
+	fmt.Printf("Received response: %s\n", setSetupResponse.BytesOrPanic())
 
 	// После этого вызова возможно потребуется переподключение,
 	// добавляем задержку, чтобы дать время на перезагрузку
@@ -109,13 +118,15 @@ func TestClient_GetStatistics(t *testing.T) {
 	}
 	defer client.Disconnect()
 
-	request := Message{Message: "GetStatistics"}
-	var response RepStatistics
-
-	err = client.SendMessage(request, &response)
+	request, err := NewRequest(MessageType_GetStatistics, nil)
 	if err != nil {
 		t.Fatalf("Failed to send message: %v", err)
 	}
 
-	fmt.Printf("Received response: %+v\n", response)
+	response, err := client.SendItem(request)
+	if err != nil {
+		t.Fatalf("Failed to send message: %v", err)
+	}
+
+	fmt.Printf("Received response: %v\n", response.BytesOrPanic())
 }
