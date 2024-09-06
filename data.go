@@ -222,8 +222,8 @@ type StateHardware struct {
 	StateHardware StateHard //Состояние контроллера
 }
 
-type SetCommand struct {
-}
+// type SetCommand struct {
+// }
 
 type CommandForDevice struct {
 	Message  string `json:"message"`  //SetCommand
