@@ -142,6 +142,7 @@ type Modbus struct {
 	Log      bool   `toml:"log" json:"log"`
 	Tmin     int    `toml:"tmin" json:"min"` //Минимальная длительность фазы
 	Old      bool   `toml:"old" json:"old"`
+	TypeKey3 bool   `toml:"key3" json:"key3"` //faile - Нормально замкнутый true -нормально разомкнутый
 }
 
 type SetupSubsystem struct {
@@ -193,7 +194,7 @@ type StateHard struct {
 	// для события SHORT_CIRQUIT_KVP, S1 содержит номер кнопки;
 	// для событий DIRECTIONS_CONFLICT и DC_DIRECTIONS_CONFLICT, S1 содержит номер конфликтующего направления
 	// для других событий описания не используются.
-	Status     []byte    //Статус КДМ в его кодировке
+	Status     []int     //Статус КДМ в его кодировке
 	StatusDirs [32]uint8 //Статусы состояния по направлениям
 	//   OFF = 0, //все сигналы выключены
 	//   DEACTIV_YELLOW=1, //направление перешло в неактивное состояние, желтый после зеленого
@@ -214,8 +215,9 @@ type StateHard struct {
 	// MyStatus     int      //Статус в переданной команде центра
 	TimeData   []uint16 //текущее временя в контроллере
 	HoursAdd   int16    //Смещение часового пояса
-	TypeDevice []uint8  // Ответ от кдм на serverid
+	TypeDevice []int    // Ответ от кдм на serverid
 	DeviceID   []uint16 //Номер устройства
+	Key3       bool     //Состояние концевого выключателя (дверь)
 }
 type StateHardware struct {
 	Message       string    `json:"message"` //StateHardware
