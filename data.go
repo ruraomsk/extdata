@@ -25,14 +25,12 @@ type Message struct {
 	Message string `json:"message"`
 }
 type GetStatistics struct {
-	Message string `json:"message"`
-	Type    string `json:"type"` //all - все что хранится в бд устройства last - последняя запись
+	Type string `json:"type"` //all - все что хранится в бд устройства last - последняя запись
 	//period - указать время начала и время конца
 	TimeStart time.Time `json:"start"`
 	TimeEnd   time.Time `json:"end"`
 }
 type RepStatistics struct {
-	Message string   `json:"message"`
 	Counts  []Counts `json:"counts"`
 	Ocupaes []Counts `json:"ocupaes"`
 }
@@ -146,8 +144,7 @@ type Modbus struct {
 }
 
 type SetupSubsystem struct {
-	Message string `json:"message"` //SetupSubsystem
-	Setup   Setup
+	Setup Setup
 }
 type StateHard struct {
 	Central       bool //true управляение центром false - локальное управление
@@ -228,10 +225,9 @@ type StateHardware struct {
 // }
 
 type CommandForDevice struct {
-	Message  string `json:"message"`  //SetCommand
-	Plan     int    `json:"plan"`     // 0 - снять управление
-	Phase    int    `json:"phase"`    // 0 - снять управление
-	Dark     bool   `json:"dark"`     // false  - отменить true-включить
-	AllRed   bool   `json:"allred"`   // false  - отменить true-включить
-	Flashing bool   `json:"flashing"` // false  - отменить true-включить
+	Plan     int  `json:"plan"`     // 0 - снять управление
+	Phase    int  `json:"phase"`    // 0 - снять управление
+	Dark     bool `json:"dark"`     // false  - отменить true-включить
+	AllRed   bool `json:"allred"`   // false  - отменить true-включить
+	Flashing bool `json:"flashing"` // false  - отменить true-включить
 }
