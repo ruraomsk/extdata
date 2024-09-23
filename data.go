@@ -31,8 +31,8 @@ type GetStatistics struct {
 	TimeEnd   time.Time `json:"end"`
 }
 type RepStatistics struct {
-	Counts  []Counts `json:"counts"`
-	Ocupaes []Counts `json:"ocupaes"`
+	Counts  []Counts `json:"counts"`  //Проехало ТС
+	Ocupaes []Counts `json:"ocupaes"` // Окупация
 }
 type Counts struct {
 	Time   time.Time `json:"time"`
@@ -64,10 +64,12 @@ type Mgr struct {
 	Chanels  []int `toml:"chanels" json:"chanels"`   //Номера каналов из которых будет собираться статистика
 	Limits   []int `toml:"limits" json:"limits"`     // Лимиты  на каждый канал
 }
+
+// Настройки тунеля TCP-IP to Modbus
 type Tunel struct {
-	Run  bool `toml:"run" json:"run"` //true Work Tunel
-	Port int  `toml:"port" json:"port"`
-	Log  bool `toml:"log" json:"log"`
+	Run  bool `toml:"run" json:"run"`   //true Work Tunel
+	Port int  `toml:"port" json:"port"` //Порт для внешнего доступа
+	Log  bool `toml:"log" json:"log"`   //Логировать ли входящие запросы?
 }
 type Energy struct {
 	Work     bool   `toml:"work" json:"work"`
@@ -93,14 +95,15 @@ type Elistar struct {
 	Run bool `toml:"run" json:"run"`
 }
 
+// Настройка для приема статистики
 type ModbusRadar struct {
-	Work    bool   `toml:"work" json:"work"`
+	Work    bool   `toml:"work" json:"work"` //True запускать прием
 	Master  bool   `toml:"master" json:"master"`
 	Debug   bool   `toml:"debug" json:"debug"`
-	Host    string `toml:"host" json:"host"`
-	Port    int    `toml:"port" json:"port"`
-	ID      int    `toml:"id" json:"id"`
-	Chanels int    `toml:"chanels" json:"chanels"`
+	Host    string `toml:"host" json:"host"`       //Host комплекса
+	Port    int    `toml:"port" json:"port"`       //Его порт
+	ID      int    `toml:"id" json:"id"`           //Uid
+	Chanels int    `toml:"chanels" json:"chanels"` //Кол-во датчиков
 }
 type Comsignal struct {
 	Run      bool
@@ -112,10 +115,10 @@ type Comsignal struct {
 
 type Utopia struct {
 	Run         bool
-	Device      string `toml:"device" json:"device"`
-	BaudRate    int    `toml:"baudrate" json:"baudrate"`
-	Parity      string `toml:"parity" json:"parity"`
-	UId         int    `toml:"uid" json:"uid"`
+	Device      string `toml:"device" json:"device"`     //Устройство
+	BaudRate    int    `toml:"baudrate" json:"baudrate"` //Скорость
+	Parity      string `toml:"parity" json:"parity"`     //Паритет
+	UId         int    `toml:"uid" json:"uid"`           //Iid
 	Debug       bool   `toml:"debug" json:"debug"`
 	LostControl int    `toml:"lostControl" json:"lostControl"`
 	Recode      bool   `toml:"recode" json:"recode"`
@@ -147,22 +150,22 @@ type SetupSubsystem struct {
 	Setup Setup
 }
 type StateHard struct {
-	Central       bool //true управляение центром false - локальное управление
-	LastOperation time.Time
-	Connect       bool   //true если есть связь с КДМ
-	Dark          bool   //true если Режим ОС
-	AllRed        bool   //true если Режим Кругом Красный
-	Flashing      bool   //true если Режим Желтый Мигающий
-	SourceTOOB    bool   //true если Источник времени отсчета внешний
-	VPU           bool   //true если включен ВПУ
-	WatchDog      uint16 //Текущий Тайм аут управления
-	Plan          int    //Номер исполняемого плана контроллером КДМ
-	Phase         int    //Номер исполняемой фазы контроллером КДМ
-	LastPhase     int    //Номер предыдущей фазы контроллера если промтакт
-	WeekCard      int    // Текущая недельная карта
-	DayCard       int    // Текущая суточная карта
-	ElapTimePk    int    //Оставшееся время до конца фазы ПК
-	ElapTimeCoord int    //Оставшееся время до конца входа в координацию
+	Central       bool      //true управляение центром false - локальное управление
+	LastOperation time.Time //время последней операции обмена
+	Connect       bool      //true если есть связь с КДМ
+	Dark          bool      //true если Режим ОС
+	AllRed        bool      //true если Режим Кругом Красный
+	Flashing      bool      //true если Режим Желтый Мигающий
+	SourceTOOB    bool      //true если Источник времени отсчета внешний
+	VPU           bool      //true если включен ВПУ
+	WatchDog      uint16    //Текущий Тайм аут управления
+	Plan          int       //Номер исполняемого плана контроллером КДМ
+	Phase         int       //Номер исполняемой фазы контроллером КДМ
+	LastPhase     int       //Номер предыдущей фазы контроллера если промтакт
+	WeekCard      int       // Текущая недельная карта
+	DayCard       int       // Текущая суточная карта
+	ElapTimePk    int       //Оставшееся время до конца фазы ПК
+	ElapTimeCoord int       //Оставшееся время до конца входа в координацию
 
 	//Код управления (0 локальное управление
 	//1 - внешнее управление по группам
