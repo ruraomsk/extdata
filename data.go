@@ -34,6 +34,7 @@ type RepStatistics struct {
 	Counts  []Counts `json:"counts"`  //Проехало ТС
 	Ocupaes []Counts `json:"ocupaes"` // Окупация
 }
+
 type Counts struct {
 	Time   time.Time `json:"time"`
 	Values []int     `json:"values"`

@@ -25,25 +25,29 @@ func Start(host string) {
 		}
 		for {
 			time.Sleep(time.Second)
-			if err = exchange(MessageType_GetStateHardware); err != nil {
+			if err = exchange(MessageType_GetBlinds); err != nil {
 				break
 			}
-			time.Sleep(time.Second)
-			if err = exchange(MessageType_GetStatistics); err != nil {
-				break
-			}
-			time.Sleep(time.Second)
-			if err = exchange(MessageType_SetCommand); err != nil {
-				break
-			}
-			time.Sleep(time.Second)
-			if err = exchange(MessageType_GetSetup); err != nil {
-				break
-			}
-			time.Sleep(time.Second)
-			if err = exchange(MessageType_SetSetup); err != nil {
-				break
-			}
+			// time.Sleep(time.Second)
+			// if err = exchange(MessageType_GetStateHardware); err != nil {
+			// 	break
+			// }
+			// time.Sleep(time.Second)
+			// if err = exchange(MessageType_GetStatistics); err != nil {
+			// 	break
+			// }
+			// time.Sleep(time.Second)
+			// if err = exchange(MessageType_SetCommand); err != nil {
+			// 	break
+			// }
+			// time.Sleep(time.Second)
+			// if err = exchange(MessageType_GetSetup); err != nil {
+			// 	break
+			// }
+			// time.Sleep(time.Second)
+			// if err = exchange(MessageType_SetSetup); err != nil {
+			// 	break
+			// }
 		}
 		fmt.Printf("error %v", err)
 		time.Sleep(5 * time.Second)

@@ -25,6 +25,7 @@ const (
 	MessageType_GetSetup         MessageType = "GetSetup"
 	MessageType_SetSetup         MessageType = "SetSetup"
 	MessageType_GetStatistics    MessageType = "GetStatistics"
+	MessageType_GetBlinds        MessageType = "GetBlinds"
 )
 
 func NewRequest(messageType MessageType, data interface{}) (*MessageItem, error) {
@@ -110,6 +111,16 @@ func NewResponse(messageType MessageType, data []byte) (*MessageItem, error) {
 				return nil, err
 			}
 		case MessageType_SetSetup:
+			var mess ResponseMessage
+			err := json.Unmarshal([]byte(data), &mess)
+			if err != nil {
+				return nil, fmt.Errorf("invalid data type for %s, expected *ResponseMessage", messageType)
+			}
+			rawData, err = json.Marshal(mess)
+			if err != nil {
+				return nil, err
+			}
+		case MessageType_GetBlinds:
 			var mess ResponseMessage
 			err := json.Unmarshal([]byte(data), &mess)
 			if err != nil {
