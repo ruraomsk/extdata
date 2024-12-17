@@ -17,6 +17,7 @@ GetSetup - просто Message				структура SetupSubsystem
 SetSetup - структура SetupSubsystem 	сообщение Ok или сообщение с ошибкой затем будет перезагружена моя программа
 	(потребуется переподключение)
 GetStatistics 							структура RepStatistics
+GetJournal								Структура RepJournal
 */
 
 const Endline byte = '\n'
@@ -38,6 +39,10 @@ type RepStatistics struct {
 type Counts struct {
 	Time   time.Time `json:"time"`
 	Values []int     `json:"values"`
+}
+
+type RepJournal struct {
+	Journal []string `json:"journal"`
 }
 
 type Setup struct {

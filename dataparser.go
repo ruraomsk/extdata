@@ -26,6 +26,7 @@ const (
 	MessageType_SetSetup         MessageType = "SetSetup"
 	MessageType_GetStatistics    MessageType = "GetStatistics"
 	MessageType_GetBlinds        MessageType = "GetBlinds"
+	MessageType_GetJournal       MessageType = "GetJournal"
 )
 
 func NewRequest(messageType MessageType, data interface{}) (*MessageItem, error) {
@@ -80,6 +81,16 @@ func NewResponse(messageType MessageType, data []byte) (*MessageItem, error) {
 				return nil, err
 			}
 		case MessageType_GetSetup:
+			var mess SetupSubsystem
+			err := json.Unmarshal([]byte(data), &mess)
+			if err != nil {
+				return nil, fmt.Errorf("invalid data type for %s, expected *SetupSubsystem", messageType)
+			}
+			rawData, err = json.Marshal(mess)
+			if err != nil {
+				return nil, err
+			}
+		case MessageType_GetJournal:
 			var mess SetupSubsystem
 			err := json.Unmarshal([]byte(data), &mess)
 			if err != nil {
@@ -159,6 +170,8 @@ func (m *MessageItem) ParseRequest() (interface{}, error) {
 		result = new(SetupSubsystem)
 	case MessageType_GetStatistics:
 		result = new(GetStatistics)
+	case MessageType_GetJournal:
+		result = new(RepJournal)
 	default:
 		return nil, fmt.Errorf("unknown message type: %s", m.Type)
 	}
@@ -187,6 +200,8 @@ func (m *MessageItem) ParseResponse() (interface{}, error) {
 		result = new(ResponseMessage)
 	case MessageType_GetStatistics:
 		result = new(RepStatistics)
+	case MessageType_GetJournal:
+		result = new(RepJournal)
 	default:
 		return nil, fmt.Errorf("unknown message type: %s", m.Type)
 	}
