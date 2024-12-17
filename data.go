@@ -239,5 +239,5 @@ type CommandForDevice struct {
 	Dark     bool `json:"dark"`     // false  - отменить true-включить
 	AllRed   bool `json:"allred"`   // false  - отменить true-включить
 	Flashing bool `json:"flashing"` // false  - отменить true-включить
-	Ru       bool `json:"flashing"` // false  - отменить true-включить
+	Ru       bool `json:"ru"`       // false  - отменить true-включить
 }
