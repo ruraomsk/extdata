@@ -27,6 +27,7 @@ const (
 	MessageType_GetStatistics    MessageType = "GetStatistics"
 	MessageType_GetBlinds        MessageType = "GetBlinds"
 	MessageType_GetJournal       MessageType = "GetJournal"
+	MessageType_GetDiagrams      MessageType = "GetDiagrams"
 )
 
 func NewRequest(messageType MessageType, data interface{}) (*MessageItem, error) {

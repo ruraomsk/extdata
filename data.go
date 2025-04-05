@@ -40,6 +40,21 @@ type Counts struct {
 	Time   time.Time `json:"time"`
 	Values []int     `json:"values"`
 }
+type GetDiagrams struct {
+	Type string `json:"type"` //all - все что хранится в бд устройства last - последняя запись
+	//period - указать время начала и время конца
+	TimeStart time.Time `json:"start"`
+	TimeEnd   time.Time `json:"end"`
+}
+
+type Pdiag struct {
+	Time time.Time `json:"time"`
+	Data []int     `data:"data"`
+}
+
+type RepDiagrams struct {
+	Pdiags []Pdiag `json:"pdiags"` //Отметки диаграмм
+}
 
 type RepJournal struct {
 	Journal []string `json:"journal"`
