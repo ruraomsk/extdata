@@ -171,22 +171,23 @@ type SetupSubsystem struct {
 	Setup Setup
 }
 type StateHard struct {
-	Central       bool      //true управляение центром false - локальное управление
-	LastOperation time.Time //время последней операции обмена
-	Connect       bool      //true если есть связь с КДМ
-	Dark          bool      //true если Режим ОС
-	AllRed        bool      //true если Режим Кругом Красный
-	Flashing      bool      //true если Режим Желтый Мигающий
-	SourceTOOB    bool      //true если Источник времени отсчета внешний
-	VPU           bool      //true если включен ВПУ
-	WatchDog      uint16    //Текущий Тайм аут управления
-	Plan          int       //Номер исполняемого плана контроллером КДМ
-	Phase         int       //Номер исполняемой фазы контроллером КДМ
-	LastPhase     int       //Номер предыдущей фазы контроллера если промтакт
-	WeekCard      int       // Текущая недельная карта
-	DayCard       int       // Текущая суточная карта
-	ElapTimePk    int       //Оставшееся время до конца фазы ПК
-	ElapTimeCoord int       //Оставшееся время до конца входа в координацию
+	Central       bool //true управляение центром false - локальное управление
+	LastOperation time.Time
+	Connect       bool   //true если есть связь с КДМ
+	Dark          bool   //true если Режим ОС
+	AllRed        bool   //true если Режим Кругом Красный
+	Flashing      bool   //true если Режим Желтый Мигающий
+	SourceTOOB    bool   //true если Источник времени отсчета внешний
+	VPU           bool   //true если включен ВПУ
+	Ready         bool   //true если «промтакт и минимальное время зеленого отработаны»
+	WatchDog      uint16 //Текущий Тайм аут управления
+	Plan          int    //Номер исполняемого плана контроллером КДМ
+	Phase         int    //Номер исполняемой фазы контроллером КДМ
+	LastPhase     int    //Номер предыдущей фазы контроллера если промтакт
+	WeekCard      int    // Текущая недельная карта
+	DayCard       int    // Текущая суточная карта
+	ElapTimePk    int    //Оставшееся время до конца фазы ПК
+	ElapTimeCoord int    //Оставшееся время до конца входа в координацию
 
 	//Код управления (0 локальное управление
 	//1 - внешнее управление по группам
@@ -215,8 +216,8 @@ type StateHard struct {
 	// для события SHORT_CIRQUIT_KVP, S1 содержит номер кнопки;
 	// для событий DIRECTIONS_CONFLICT и DC_DIRECTIONS_CONFLICT, S1 содержит номер конфликтующего направления
 	// для других событий описания не используются.
-	Status     []int      //Статус КДМ в его кодировке
-	StatusDirs [32]uint16 //Статусы состояния по направлениям
+	Status     []int    //Статус КДМ в его кодировке
+	StatusDirs []uint16 //Статусы состояния по направлениям
 	//   OFF = 0, //все сигналы выключены
 	//   DEACTIV_YELLOW=1, //направление перешло в неактивное состояние, желтый после зеленого
 	//   DEACTIV_RED=2, //направление перешло в неактивное состояние, красный
@@ -234,12 +235,28 @@ type StateHard struct {
 	RealWatchDog uint16   //Остаток watchdog
 	TOOBs        []uint16 //Счетчики по направлениям
 	// MyStatus     int      //Статус в переданной команде центра
-	TimeData   []uint16 //текущее временя в контроллере
-	HoursAdd   int16    //Смещение часового пояса
-	TypeDevice []int    // Ответ от кдм на serverid
-	DeviceID   []uint16 //Номер устройства
-	Key3       bool     //Состояние концевого выключателя (дверь)
+	TimeData       []uint16    //текущее временя в контроллере
+	HoursAdd       int16       //Смещение часового пояса
+	TypeDevice     []int       // Ответ от кдм на serverid
+	ExtendedDevice int         // 0- КДМ 1 - Инспектор 2 - Инспектор 96 ключей
+	DeviceID       []uint16    //Номер устройства
+	Key1           bool        //Состояние концевого выключателя (КВП1)
+	Key2           bool        //Состояние концевого выключателя (КВП2)
+	Key3           bool        //Состояние концевого выключателя (дверь)
+	NameKDM        string      //Наименование перекрестка
+	Equipment      []Equipment //Состав оборудования
+	Blocked        bool        //Стартовали с ЖМ ОС КК команды автоном и центр не сбрасывают эти признаки
+	ExternalStatus int         //Статус выполнения команды внешнего управления
+	Autonom        bool        //Флаг состояния автоном (true - автоном)
 }
+type Equipment struct {
+	IDDesk  int
+	Adress  int
+	Slot    int
+	Version int
+	Build   int
+}
+
 type StateHardware struct {
 	Message       string    `json:"message"` //StateHardware
 	StateHardware StateHard //Состояние контроллера
