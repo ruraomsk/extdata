@@ -272,4 +272,5 @@ type CommandForDevice struct {
 	AllRed   bool `json:"allred"`   // false  - отменить true-включить
 	Flashing bool `json:"flashing"` // false  - отменить true-включить
 	Ru       bool `json:"ru"`       // false  - отменить true-включить
+	Restart  bool `json:"restart"`  // true   -перезапуск контроллера
 }
