@@ -70,6 +70,17 @@ type OneLevel struct {
 type RepLoggers struct {
 	Levels []OneLevel `json:"levels"`
 }
+type PowerDevice struct {
+	Plat int  `json:"p"` //Номер платы
+	Line int  `json:"l"` //Номер канала
+	I    bool `json:"i"` //Неисправность по току
+	U    bool `json:"u"` //Неисправность по напряжению
+	B    bool `json:"b"` //обрыв
+	W    bool `json:"w"` //горит
+}
+type RepPowerDevs struct {
+	Devices []PowerDevice `json:"devices"`
+}
 
 type Setup struct {
 	Name        string      `toml:"name"`
