@@ -59,6 +59,17 @@ type RepDiagrams struct {
 type RepJournal struct {
 	Journal []string `json:"journal"`
 }
+type PointLoggers struct {
+	Time  time.Time `json:"time"`
+	Value string    `json:"value"`
+}
+type OneLevel struct {
+	Level  int            `json:"level"`
+	Points []PointLoggers `json:"points"`
+}
+type RepLoggers struct {
+	Levels []OneLevel `json:"levels"`
+}
 
 type Setup struct {
 	Name        string      `toml:"name"`
