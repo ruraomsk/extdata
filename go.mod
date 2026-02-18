@@ -2,7 +2,7 @@ module github.com/ruraomsk/extdata
 
 go 1.23.4
 
-require github.com/tumarsal/scaner v0.0.0-20260218083440-9d852aa29f50
+require github.com/tumarsal/scaner v0.0.0-20260217124105-4317274eb526
 
 require (
 	github.com/bmatcuk/doublestar/v4 v4.9.1 // indirect
