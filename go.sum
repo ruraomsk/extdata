@@ -1,0 +1,4 @@
+github.com/bmatcuk/doublestar/v4 v4.9.1 h1:X8jg9rRZmJd4yRy7ZeNDRnM+T3ZfHv15JiBJ/avrEXE=
+github.com/bmatcuk/doublestar/v4 v4.9.1/go.mod h1:xBQ8jztBU6kakFMg+8WGxn0c6z1fTSPVIjEY1Wr7jzc=
+github.com/svent/sift v0.9.1 h1:dq9LyJUp+JY2YbM50q3O7aEQ1DUAO/pOIR9BWGwVdIQ=
+github.com/svent/sift v0.9.1/go.mod h1:K8skBhb7oBzmoQh/93iJZAwGBzmoyF9H7EZv++TxCdE=

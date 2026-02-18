@@ -1,0 +1,13 @@
+{
+  "type": "SetCommand",
+  "data": {
+    "plan": 0,
+    "phase": 0,
+    "dark": false,
+    "allred": false,
+    "flashing": false,
+    "ru": true,
+    "restart": false
+  },
+  "error": ""
+}
