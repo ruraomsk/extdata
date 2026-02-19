@@ -1,0 +1,92 @@
+{
+  "type": "SetSetup",
+  "data": {
+    "Setup": {
+      "name": "",
+      "logpath": "",
+      "id": 0,
+      "dbpath": "",
+      "modbus": {
+        "device": "",
+        "baudrate": 9600,
+        "parity": "N",
+        "uid": 1,
+        "debug": false,
+        "log": false,
+        "min": 0,
+        "old": false,
+        "key3": false
+      },
+      "utopia": {
+        "device": "",
+        "baudrate": 9600,
+        "parity": "N",
+        "uid": 1,
+        "debug": false,
+        "lostControl": 0,
+        "recode": false,
+        "replay": false
+      },
+      "snmp": {
+        "run": false,
+        "listen": ""
+      },
+      "trafficdata": {
+        "work": false,
+        "debug": false,
+        "host": "",
+        "port": 0,
+        "listen": 0,
+        "chanels": 0,
+        "diaps": 0,
+        "diap": 0
+      },
+      "modbusradar": {
+        "work": false,
+        "master": false,
+        "debug": false,
+        "host": "",
+        "port": 0,
+        "id": 0,
+        "chanels": 0
+      },
+      "elistar": {
+        "run": false
+      },
+      "micro": {
+        "run": false,
+        "host": "",
+        "port": 0,
+        "log": false,
+        "id": 0
+      },
+      "energy": {
+        "work": false,
+        "device": "",
+        "baudrate": 9600,
+        "parity": "N",
+        "uid": 0
+      },
+      "mgr": {
+        "run": false,
+        "work": false,
+        "step": 0,
+        "interval": 0,
+        "chanels": [],
+        "limits": []
+      },
+      "tunel": {
+        "run": false,
+        "port": 0,
+        "log": false
+      },
+      "comsignal": {
+        "device": "",
+        "baudrate": 9600,
+        "parity": "N",
+        "debug": false
+      }
+    }
+  },
+  "error": ""
+}

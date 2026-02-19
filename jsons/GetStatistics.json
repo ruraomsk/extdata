@@ -1,0 +1,9 @@
+{
+  "type": "GetStatistics",
+  "data": {
+    "type": "all",
+    "start": "2025-01-01T00:00:00Z",
+    "end": "2025-01-02T00:00:00Z"
+  },
+  "error": ""
+}
