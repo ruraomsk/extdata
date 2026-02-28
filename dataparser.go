@@ -30,6 +30,7 @@ const (
 	MessageType_GetDiagrams      MessageType = "GetDiagrams"
 	MessageType_GetLoggers       MessageType = "GetLoggers"
 	MessageType_GetPowerDevs     MessageType = "GetPowerDevs"
+	MessageType_SetBlinds        MessageType = "SetBlinds"
 )
 
 func NewRequest(messageType MessageType, data interface{}) (*MessageItem, error) {
@@ -49,6 +50,18 @@ func NewRequest(messageType MessageType, data interface{}) (*MessageItem, error)
 		case MessageType_SetSetup:
 			if _, ok := data.(*SetupSubsystem); !ok {
 				return nil, fmt.Errorf("invalid data type for %s, expected *SetupSubsystem", messageType)
+			}
+		case MessageType_GetLoggers:
+			if _, ok := data.(*RepLoggers); !ok {
+				return nil, fmt.Errorf("invalid data type for %s, expected *RepLoggers", messageType)
+			}
+		case MessageType_GetPowerDevs:
+			if _, ok := data.(*RepPowerDevs); !ok {
+				return nil, fmt.Errorf("invalid data type for %s, expected *RepPowerDevs", messageType)
+			}
+		case MessageType_SetBlinds:
+			if _, ok := data.(*RepBlinds); !ok {
+				return nil, fmt.Errorf("invalid data type for %s, expected *RepBlinds", messageType)
 			}
 		default:
 			return nil, fmt.Errorf("unknown message type: %s", messageType)
@@ -135,10 +148,40 @@ func NewResponse(messageType MessageType, data []byte) (*MessageItem, error) {
 				return nil, err
 			}
 		case MessageType_GetBlinds:
-			var mess ResponseMessage
+			var mess RepBlinds
 			err := json.Unmarshal([]byte(data), &mess)
 			if err != nil {
-				return nil, fmt.Errorf("invalid data type for %s, expected *ResponseMessage", messageType)
+				return nil, fmt.Errorf("invalid data type for %s, expected *RepBlinds", messageType)
+			}
+			rawData, err = json.Marshal(mess)
+			if err != nil {
+				return nil, err
+			}
+		case MessageType_GetLoggers:
+			var mess RepLoggers
+			err := json.Unmarshal([]byte(data), &mess)
+			if err != nil {
+				return nil, fmt.Errorf("invalid data type for %s, expected *RepLoggers", messageType)
+			}
+			rawData, err = json.Marshal(mess)
+			if err != nil {
+				return nil, err
+			}
+		case MessageType_GetPowerDevs:
+			var mess RepPowerDevs
+			err := json.Unmarshal([]byte(data), &mess)
+			if err != nil {
+				return nil, fmt.Errorf("invalid data type for %s, expected *RepPowerDevs", messageType)
+			}
+			rawData, err = json.Marshal(mess)
+			if err != nil {
+				return nil, err
+			}
+		case MessageType_SetBlinds:
+			var mess RepBlinds
+			err := json.Unmarshal([]byte(data), &mess)
+			if err != nil {
+				return nil, fmt.Errorf("invalid data type for %s, expected *RepBlinds", messageType)
 			}
 			rawData, err = json.Marshal(mess)
 			if err != nil {
@@ -175,6 +218,12 @@ func (m *MessageItem) ParseRequest() (interface{}, error) {
 		result = new(GetStatistics)
 	case MessageType_GetJournal:
 		result = new(RepJournal)
+	case MessageType_GetLoggers:
+		result = new(RepLoggers)
+	case MessageType_GetPowerDevs:
+		result = new(RepPowerDevs)
+	case MessageType_SetBlinds:
+		result = new(RepBlinds)
 	default:
 		return nil, fmt.Errorf("unknown message type: %s", m.Type)
 	}
@@ -205,6 +254,12 @@ func (m *MessageItem) ParseResponse() (interface{}, error) {
 		result = new(RepStatistics)
 	case MessageType_GetJournal:
 		result = new(RepJournal)
+	case MessageType_GetLoggers:
+		result = new(RepLoggers)
+	case MessageType_GetPowerDevs:
+		result = new(RepPowerDevs)
+	case MessageType_SetBlinds:
+		result = new(RepBlinds)
 	default:
 		return nil, fmt.Errorf("unknown message type: %s", m.Type)
 	}

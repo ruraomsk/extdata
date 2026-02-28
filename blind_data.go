@@ -1,7 +1,7 @@
 package client
 
 type RepBlinds struct {
-	Ready      bool       //true если прочитаны
+	Ready      bool       //true если прочитаны - при отправке на установку true значит перейти в ОС при записи
 	Conflicts  Conflicts  //Таблица конфликтов
 	DefineNaps DefineNaps //Описание направлений
 	DefPhases  DefPhases  //Описание фаз
