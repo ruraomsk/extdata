@@ -10,8 +10,8 @@ type RepBlinds struct {
 	Year       Year       //Годовая карта
 	Weeks      Weeks      //Недельные карты
 	Days       Days       //Дневные карты
-	Status     [3]int
-	SerialNum  [2]uint16
+	Status     [3]int     //
+	SerialNum  [2]uint16  //
 }
 
 type Conflicts struct {

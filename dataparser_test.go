@@ -99,6 +99,81 @@ func TestNewRequest_GetStatistics_WithMessage(t *testing.T) {
 	}
 }
 
+func TestNewRequest_GetLoggers_WithRepLoggers(t *testing.T) {
+	rep := &RepLoggers{Levels: []OneLevel{{Level: 1, Points: []PointLoggers{}}}}
+	item, err := NewRequest(MessageType_GetLoggers, rep)
+	if err != nil {
+		t.Fatalf("NewRequest: %v", err)
+	}
+	if item.Type != MessageType_GetLoggers {
+		t.Errorf("Type = %q, want %q", item.Type, MessageType_GetLoggers)
+	}
+	var decoded RepLoggers
+	if err := json.Unmarshal(item.Data, &decoded); err != nil {
+		t.Fatalf("unmarshal Data: %v", err)
+	}
+	if len(decoded.Levels) != 1 || decoded.Levels[0].Level != 1 {
+		t.Errorf("decoded.Levels = %+v", decoded.Levels)
+	}
+}
+
+func TestNewRequest_GetLoggers_WrongDataType(t *testing.T) {
+	_, err := NewRequest(MessageType_GetLoggers, &Message{})
+	if err == nil {
+		t.Fatal("expected error for wrong data type")
+	}
+}
+
+func TestNewRequest_GetPowerDevs_WithRepPowerDevs(t *testing.T) {
+	rep := &RepPowerDevs{Devices: []PowerDevice{{Plat: 1, Line: 2}}}
+	item, err := NewRequest(MessageType_GetPowerDevs, rep)
+	if err != nil {
+		t.Fatalf("NewRequest: %v", err)
+	}
+	if item.Type != MessageType_GetPowerDevs {
+		t.Errorf("Type = %q, want %q", item.Type, MessageType_GetPowerDevs)
+	}
+	var decoded RepPowerDevs
+	if err := json.Unmarshal(item.Data, &decoded); err != nil {
+		t.Fatalf("unmarshal Data: %v", err)
+	}
+	if len(decoded.Devices) != 1 || decoded.Devices[0].Plat != 1 || decoded.Devices[0].Line != 2 {
+		t.Errorf("decoded.Devices = %+v", decoded.Devices)
+	}
+}
+
+func TestNewRequest_GetPowerDevs_WrongDataType(t *testing.T) {
+	_, err := NewRequest(MessageType_GetPowerDevs, &Message{})
+	if err == nil {
+		t.Fatal("expected error for wrong data type")
+	}
+}
+
+func TestNewRequest_SetBlinds_WithRepBlinds(t *testing.T) {
+	rep := &RepBlinds{Ready: true}
+	item, err := NewRequest(MessageType_SetBlinds, rep)
+	if err != nil {
+		t.Fatalf("NewRequest: %v", err)
+	}
+	if item.Type != MessageType_SetBlinds {
+		t.Errorf("Type = %q, want %q", item.Type, MessageType_SetBlinds)
+	}
+	var decoded RepBlinds
+	if err := json.Unmarshal(item.Data, &decoded); err != nil {
+		t.Fatalf("unmarshal Data: %v", err)
+	}
+	if !decoded.Ready {
+		t.Errorf("decoded.Ready = false, want true")
+	}
+}
+
+func TestNewRequest_SetBlinds_WrongDataType(t *testing.T) {
+	_, err := NewRequest(MessageType_SetBlinds, &Message{})
+	if err == nil {
+		t.Fatal("expected error for wrong data type")
+	}
+}
+
 func TestNewRequest_UnknownMessageType(t *testing.T) {
 	_, err := NewRequest(MessageType_GetBlinds, &Message{})
 	if err == nil {
@@ -201,6 +276,60 @@ func TestNewResponse_GetBlinds_ValidJSON(t *testing.T) {
 	}
 	if item.Type != MessageType_GetBlinds {
 		t.Errorf("Type = %q", item.Type)
+	}
+}
+
+func TestNewResponse_GetLoggers_ValidJSON(t *testing.T) {
+	data := []byte(`{"levels":[{"level":1,"points":[]}]}`)
+	item, err := NewResponse(MessageType_GetLoggers, data)
+	if err != nil {
+		t.Fatalf("NewResponse: %v", err)
+	}
+	if item.Type != MessageType_GetLoggers {
+		t.Errorf("Type = %q", item.Type)
+	}
+}
+
+func TestNewResponse_GetLoggers_InvalidJSON(t *testing.T) {
+	_, err := NewResponse(MessageType_GetLoggers, []byte("not json"))
+	if err == nil {
+		t.Fatal("expected error for invalid JSON")
+	}
+}
+
+func TestNewResponse_GetPowerDevs_ValidJSON(t *testing.T) {
+	data := []byte(`{"devices":[{"p":1,"l":2,"i":false,"u":false,"b":false,"w":false}]}`)
+	item, err := NewResponse(MessageType_GetPowerDevs, data)
+	if err != nil {
+		t.Fatalf("NewResponse: %v", err)
+	}
+	if item.Type != MessageType_GetPowerDevs {
+		t.Errorf("Type = %q", item.Type)
+	}
+}
+
+func TestNewResponse_GetPowerDevs_InvalidJSON(t *testing.T) {
+	_, err := NewResponse(MessageType_GetPowerDevs, []byte("not json"))
+	if err == nil {
+		t.Fatal("expected error for invalid JSON")
+	}
+}
+
+func TestNewResponse_SetBlinds_ValidJSON(t *testing.T) {
+	data := []byte(`{"Ready":true}`)
+	item, err := NewResponse(MessageType_SetBlinds, data)
+	if err != nil {
+		t.Fatalf("NewResponse: %v", err)
+	}
+	if item.Type != MessageType_SetBlinds {
+		t.Errorf("Type = %q", item.Type)
+	}
+}
+
+func TestNewResponse_SetBlinds_InvalidJSON(t *testing.T) {
+	_, err := NewResponse(MessageType_SetBlinds, []byte("not json"))
+	if err == nil {
+		t.Fatal("expected error for invalid JSON")
 	}
 }
 
@@ -322,6 +451,54 @@ func TestMessageItem_ParseRequest_GetJournal(t *testing.T) {
 	}
 }
 
+func TestMessageItem_ParseRequest_GetLoggers(t *testing.T) {
+	data := []byte(`{"levels":[{"level":2,"points":[{"time":"2025-01-01T12:00:00Z","value":"v1"}]}]}`)
+	m := &MessageItem{Type: MessageType_GetLoggers, Data: data}
+	v, err := m.ParseRequest()
+	if err != nil {
+		t.Fatalf("ParseRequest: %v", err)
+	}
+	rep, ok := v.(*RepLoggers)
+	if !ok {
+		t.Fatalf("expected *RepLoggers, got %T", v)
+	}
+	if len(rep.Levels) != 1 || rep.Levels[0].Level != 2 || len(rep.Levels[0].Points) != 1 {
+		t.Errorf("got %+v", rep.Levels)
+	}
+}
+
+func TestMessageItem_ParseRequest_GetPowerDevs(t *testing.T) {
+	data := []byte(`{"devices":[{"p":3,"l":4,"i":true,"u":false,"b":false,"w":false}]}`)
+	m := &MessageItem{Type: MessageType_GetPowerDevs, Data: data}
+	v, err := m.ParseRequest()
+	if err != nil {
+		t.Fatalf("ParseRequest: %v", err)
+	}
+	rep, ok := v.(*RepPowerDevs)
+	if !ok {
+		t.Fatalf("expected *RepPowerDevs, got %T", v)
+	}
+	if len(rep.Devices) != 1 || rep.Devices[0].Plat != 3 || rep.Devices[0].Line != 4 || !rep.Devices[0].I {
+		t.Errorf("got %+v", rep.Devices)
+	}
+}
+
+func TestMessageItem_ParseRequest_SetBlinds(t *testing.T) {
+	data := []byte(`{"Ready":true}`)
+	m := &MessageItem{Type: MessageType_SetBlinds, Data: data}
+	v, err := m.ParseRequest()
+	if err != nil {
+		t.Fatalf("ParseRequest: %v", err)
+	}
+	rep, ok := v.(*RepBlinds)
+	if !ok {
+		t.Fatalf("expected *RepBlinds, got %T", v)
+	}
+	if !rep.Ready {
+		t.Errorf("Ready = false, want true")
+	}
+}
+
 func TestMessageItem_ParseRequest_UnknownType(t *testing.T) {
 	m := &MessageItem{Type: MessageType_GetBlinds, Data: []byte("{}")}
 	_, err := m.ParseRequest()
@@ -414,6 +591,54 @@ func TestMessageItem_ParseResponse_GetJournal(t *testing.T) {
 	_, ok := v.(*RepJournal)
 	if !ok {
 		t.Fatalf("expected *RepJournal, got %T", v)
+	}
+}
+
+func TestMessageItem_ParseResponse_GetLoggers(t *testing.T) {
+	data := []byte(`{"levels":[{"level":1,"points":[]}]}`)
+	m := &MessageItem{Type: MessageType_GetLoggers, Data: data}
+	v, err := m.ParseResponse()
+	if err != nil {
+		t.Fatalf("ParseResponse: %v", err)
+	}
+	rep, ok := v.(*RepLoggers)
+	if !ok {
+		t.Fatalf("expected *RepLoggers, got %T", v)
+	}
+	if len(rep.Levels) != 1 || rep.Levels[0].Level != 1 {
+		t.Errorf("got %+v", rep.Levels)
+	}
+}
+
+func TestMessageItem_ParseResponse_GetPowerDevs(t *testing.T) {
+	data := []byte(`{"devices":[{"p":1,"l":2,"i":false,"u":false,"b":false,"w":false}]}`)
+	m := &MessageItem{Type: MessageType_GetPowerDevs, Data: data}
+	v, err := m.ParseResponse()
+	if err != nil {
+		t.Fatalf("ParseResponse: %v", err)
+	}
+	rep, ok := v.(*RepPowerDevs)
+	if !ok {
+		t.Fatalf("expected *RepPowerDevs, got %T", v)
+	}
+	if len(rep.Devices) != 1 || rep.Devices[0].Plat != 1 || rep.Devices[0].Line != 2 {
+		t.Errorf("got %+v", rep.Devices)
+	}
+}
+
+func TestMessageItem_ParseResponse_SetBlinds(t *testing.T) {
+	data := []byte(`{"Ready":true}`)
+	m := &MessageItem{Type: MessageType_SetBlinds, Data: data}
+	v, err := m.ParseResponse()
+	if err != nil {
+		t.Fatalf("ParseResponse: %v", err)
+	}
+	rep, ok := v.(*RepBlinds)
+	if !ok {
+		t.Fatalf("expected *RepBlinds, got %T", v)
+	}
+	if !rep.Ready {
+		t.Errorf("Ready = false, want true")
 	}
 }
 
