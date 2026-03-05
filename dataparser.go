@@ -33,7 +33,7 @@ const (
 	MessageType_SetBlinds        MessageType = "SetBlinds"
 )
 
-func NewRequest(messageType MessageType, data interface{}) (*MessageItem, error) {
+func NewRequest(messageType MessageType, data any) (*MessageItem, error) {
 	var rawData []byte
 	var err error
 	if data != nil {
@@ -200,11 +200,11 @@ func NewResponse(messageType MessageType, data []byte) (*MessageItem, error) {
 	}, nil
 }
 
-func (m *MessageItem) ParseRequest() (interface{}, error) {
+func (m *MessageItem) ParseRequest() (any, error) {
 	if len(m.Data) == 0 {
 		return nil, nil
 	}
-	var result interface{}
+	var result any
 	switch m.Type {
 	case MessageType_GetStateHardware:
 		result = new(Message)
@@ -235,11 +235,11 @@ func (m *MessageItem) ParseRequest() (interface{}, error) {
 	return result, nil
 }
 
-func (m *MessageItem) ParseResponse() (interface{}, error) {
+func (m *MessageItem) ParseResponse() (any, error) {
 	if len(m.Data) == 0 {
 		return nil, nil
 	}
-	var result interface{}
+	var result any
 
 	switch m.Type {
 	case MessageType_GetStateHardware:

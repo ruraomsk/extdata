@@ -26,8 +26,7 @@ func TestClient_GetStateHardware(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to send message: %v", err)
 	}
-
-	fmt.Printf("Received response: %v\n", string(response.BytesOrPanic()))
+	t.Fatal("Received response: ", string(response.BytesOrPanic()))
 }
 
 func TestClient_SetCommand(t *testing.T) {

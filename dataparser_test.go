@@ -758,7 +758,7 @@ func TestRoundtrip_ParseMessage_Bytes(t *testing.T) {
 	}
 }
 
-func mustMarshal(v interface{}) []byte {
+func mustMarshal(v any) []byte {
 	b, err := json.Marshal(v)
 	if err != nil {
 		panic(err)

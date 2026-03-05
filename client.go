@@ -47,7 +47,7 @@ func (c *Client) Connect() error {
 	}
 
 	var err error
-	c.conn, err = net.Dial("tcp", fmt.Sprintf("%s:%d", c.host, c.port))
+	c.conn, err = net.Dial("tcp", net.JoinHostPort(c.host, fmt.Sprintf("%d", c.port)))
 	if err != nil {
 		return err
 	}
