@@ -186,7 +186,11 @@ type Modbus struct {
 	Log      bool   `toml:"log" json:"log"`
 	Tmin     int    `toml:"tmin" json:"min"` //Минимальная длительность фазы
 	Old      bool   `toml:"old" json:"old"`
-	TypeKey3 bool   `toml:"key3" json:"key3"` //faile - Нормально замкнутый true -нормально разомкнутый
+	TypeKey3 bool   `toml:"key3" json:"key3"`       //faile - Нормально замкнутый true -нормально разомкнутый
+	Days     int    `toml:"days" json:"days"`       //Сколько дней храним логи
+	Time     bool   `toml:"time" json:"time"`       //Использовать время контроллера
+	Restart  bool   `toml:"restart" json:"restart"` //Если истина то стартовать из предыдущего состояния
+	Full     bool   `toml:"full" json:"full"`       //Если истина то можно устанановить таблицу конфликтов, описание направлений и фаз
 }
 
 type SetupSubsystem struct {
