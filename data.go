@@ -184,8 +184,8 @@ type Modbus struct {
 	UId      int    `toml:"uid" json:"uid"`
 	Debug    bool   `toml:"debug" json:"debug"`
 	Log      bool   `toml:"log" json:"log"`
-	Tmin     int    `toml:"tmin" json:"min"` //Минимальная длительность фазы
-	Old      bool   `toml:"old" json:"old"`
+	Tmin     int    `toml:"tmin" json:"min"`        //Минимальная длительность фазы
+	Old      bool   `toml:"old" json:"old"`         // НЕ ИСПОЛЬЗОВАТЬ!
 	TypeKey3 bool   `toml:"key3" json:"key3"`       //faile - Нормально замкнутый true -нормально разомкнутый
 	Days     int    `toml:"days" json:"days"`       //Сколько дней храним логи
 	Time     bool   `toml:"time" json:"time"`       //Использовать время контроллера
