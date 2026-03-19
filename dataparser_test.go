@@ -167,6 +167,58 @@ func TestNewRequest_SetBlinds_WithRepBlinds(t *testing.T) {
 	}
 }
 
+func TestClient_GetBlind(t *testing.T) {
+	client := NewClient(host)
+	err := client.Connect()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer client.Disconnect()
+
+	req, err := NewRequest(MessageType_GetBlinds, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	res, err := client.SendItem(req)
+
+	resposne, err := res.ParseResponse()
+	t.Logf("Blinds written to %s", resposne)
+
+}
+
+func TestClient_SetBlindFull(t *testing.T) {
+	client := NewClient(host)
+	err := client.Connect()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer client.Disconnect()
+
+	req, err := NewRequest(MessageType_GetBlinds, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	res, err := client.SendItem(req)
+
+	resposne, err := res.ParseResponse()
+	t.Logf("Blinds written to %s", resposne)
+
+	setBlindsReq, err := NewRequest(MessageType_SetBlinds, resposne)
+	if err != nil {
+		t.Fatal(err)
+	}
+	setBlindsRes, err := client.SendItem(setBlindsReq)
+	if err != nil {
+		t.Fatal(err)
+	}
+	setBlindsResData, err := setBlindsRes.ParseResponse()
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("Blinds written to %s", setBlindsResData)
+
+}
+
 func TestNewRequest_SetBlinds_WrongDataType(t *testing.T) {
 	_, err := NewRequest(MessageType_SetBlinds, &Message{})
 	if err == nil {
