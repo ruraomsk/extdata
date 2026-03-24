@@ -83,10 +83,7 @@ type RepPowerDevs struct {
 }
 
 type Setup struct {
-	Name        string      `toml:"name"`
-	LogPath     string      `toml:"logpath"`
-	Id          int         `toml:"id"`
-	DbPath      string      `toml:"dbpath"`
+	Potop       Potop       `toml:"potop" json:"potop"`
 	Modbus      Modbus      `toml:"modbus" json:"modbus"`
 	Utopia      Utopia      `toml:"utopia" json:"utopia"`
 	SNMP        SNMP        `toml:"snmp" json:"snmp"`
@@ -99,6 +96,19 @@ type Setup struct {
 	Tunel       Tunel       `toml:"tunel" json:"tunel"`
 	Comsignal   Comsignal   `toml:"comsignal" json:"comsignal"`
 }
+type Potop struct {
+	DateDeploy string
+	Name       string `toml:"name" json:"name"`       //Имя устройства
+	LogPath    string `toml:"logpath" json:"logpath"` //Путь для лога
+	Id         int    `toml:"id" json:"id"`           //Номер устройства
+	Days       int    `toml:"days" json:"days"`       //Сколько дней храним логи
+	DbPath     string `toml:"dbpath" json:"dbpath"`   // Путь к внутренней БД
+	Time       bool   `toml:"time" json:"time"`       //Использовать время контроллера
+	Restart    bool   `toml:"restart" json:"restart"` //Если истина то стартовать из предыдущего состояния
+	Full       bool   `toml:"full" json:"full"`       //Если истина то можно устанановить таблицу конфликтов, описание направлений и фаз
+	Pass       string `toml:"pass" json:"pass"`       //Пароль для входа в экранную форму
+}
+
 type Mgr struct {
 	Run      bool  `toml:"run" json:"run"`           //true Run MGR
 	Work     bool  `toml:"work" json:"work"`         //true work MGR
@@ -184,13 +194,9 @@ type Modbus struct {
 	UId      int    `toml:"uid" json:"uid"`
 	Debug    bool   `toml:"debug" json:"debug"`
 	Log      bool   `toml:"log" json:"log"`
-	Tmin     int    `toml:"tmin" json:"min"`        //Минимальная длительность фазы
-	Old      bool   `toml:"old" json:"old"`         // НЕ ИСПОЛЬЗОВАТЬ!
-	TypeKey3 bool   `toml:"key3" json:"key3"`       //faile - Нормально замкнутый true -нормально разомкнутый
-	Days     int    `toml:"days" json:"days"`       //Сколько дней храним логи
-	Time     bool   `toml:"time" json:"time"`       //Использовать время контроллера
-	Restart  bool   `toml:"restart" json:"restart"` //Если истина то стартовать из предыдущего состояния
-	Full     bool   `toml:"full" json:"full"`       //Если истина то можно устанановить таблицу конфликтов, описание направлений и фаз
+	Tmin     int    `toml:"tmin" json:"min"`  //Минимальная длительность фазы
+	Old      bool   `toml:"old" json:"old"`   // НЕ ИСПОЛЬЗОВАТЬ!
+	TypeKey3 bool   `toml:"key3" json:"key3"` //faile - Нормально замкнутый true -нормально разомкнутый
 }
 
 type SetupSubsystem struct {
